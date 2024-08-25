@@ -1,0 +1,18 @@
+h1 {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700 !important;
+    font-style: normal;
+    margin-left: 15px;
+    font-size: 38px !important;
+}
+
+p, ion-title, ion-input {
+    font-family: "Montserrat", sans-serif;
+}
+
+/* 
+ion-popover::part(backdrop) {
+    background-color: rgba(0, 0, 0, 0);
+    Fully transparent backdrop
+} */

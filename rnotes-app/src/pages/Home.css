@@ -1,0 +1,124 @@
+.search-icon {
+    margin-top: 20px;
+    float: right;
+    margin-right: 15px;
+}
+
+.search-icon svg {
+    fill: var(--text-color) !important;
+}
+
+.line {
+    background-color: var(--text-color);
+    width: 95%;
+    height: 4px;
+    margin: 18px 25px 0px 0px;
+}
+
+.second-line {
+    background-color: var(--text-color);
+    width: 95%;
+    height: 4px;
+    margin: 18px 20px 0px 20px;
+}
+
+
+
+.bookmark-icon {
+    margin-left: 8px;
+}
+
+.bookmark-icon span svg {
+    color: var(--text-color);
+}
+
+/* Selector */
+.selector-row {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-left: 15px;
+    margin-bottom: 8px;
+}
+
+.selector-item {
+    flex: 0 0 auto;
+    margin-right: 10px;
+    padding: 10px 15px 10px 15px;
+    border-radius: 60px;
+    font-size: 18px;
+    background-color: var(--note-background-color) !important;
+    font-family: "Montserrat", sans-serif;
+}
+
+.selected-item {
+    background-color: var(--text-color) !important;
+    color: var(--background-color);
+}
+
+/* Notes */
+
+/* Priority Note */
+.note-title {
+    font-size: 20px;
+    margin: 0px 0px 8px 0px;
+}
+
+.note-body {
+    white-space: pre-wrap;
+    /* Preserves spaces and line breaks */
+    word-wrap: break-word;
+    /* Breaks long words to prevent overflow */
+}
+
+.priority-note {
+    background-color: var(--prefrence-color);
+    margin: 10px 20px 10px 20px;
+    padding: 15px 15px;
+    border-radius: 22px;
+    font-family: "Montserrat", sans-serif;
+    width: 100%;
+}
+
+.note-footer-date {
+    margin-top: 7px;
+}
+
+
+.note-array-two {
+    background-color: var(--note-background-color);
+    margin: 10px 3px 10px 15px;
+    padding: 15px 15px;
+    border-radius: 22px;
+    font-family: "Montserrat", sans-serif;
+}
+
+.note-array-one {
+    background-color: var(--note-background-color);
+    margin: 10px 15px 10px 3px;
+    padding: 15px 15px;
+    border-radius: 22px;
+    font-family: "Montserrat", sans-serif;
+}
+
+
+/* Note options button */
+.note-option-list ion-item span svg {
+    color: var(--text-color) !important;
+    fill: var(--text-color) !important;
+}
+.note-option-list-item-text {
+    float: right !important;
+}
+.note-option-list {
+    opacity: 80%;
+}
+body.popover-open {
+    overflow: auto !important;
+}
+.note-options-button {
+    float: right;
+}
+.note-options-button span svg {
+    color: var(--text-color);
+}
