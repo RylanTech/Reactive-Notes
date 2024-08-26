@@ -1,11 +1,14 @@
-import { IonButton, IonButtons, IonCol, IonContent, IonHeader, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonPage, IonPopover, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCol, IonContent, IonHeader, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonPage, IonPopover, IonRow, IonToolbar } from '@ionic/react';
 import './Home.css';
-import { AddOutline, ArchiveOutline, BookmarkOutline, BookmarksOutline, ChevronDownCircleOutline, HeartDislikeOutline, Search, TrashOutline, } from 'react-ionicons';
+import { AddOutline, ArchiveOutline, BookmarkOutline, BookmarksOutline, ChevronDownCircleOutline, HeartDislikeOutline, HeartOutline, Search, TrashOutline, } from 'react-ionicons';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { defaultNoteBigObject, note, noteBigObject, NoteContext } from '../contexts/NoteContexts';
+import { useHistory } from 'react-router';
 
 
 const Home: React.FC = () => {
+
+  const history = useHistory()
 
   const [categoryModal, setCategoryModal] = useState(false);
   const [newCategory, setNewCategory] = useState<String | undefined | null>('');
@@ -22,6 +25,7 @@ const Home: React.FC = () => {
   const notes: noteBigObject = {
     priorityNotes: [
       {
+        id: 1,
         title: 'Meeting Notes',
         body: `Remember to buy donuts for everyone before the meeting.
     
@@ -32,6 +36,7 @@ During the meeting, grab a picture or ask for the graphics so we can analyze the
     ],
     bookmarkedNotes: [
       {
+        id: 2,
         title: `Mike's birthday`,
         body: `Gift ideas
 1. Toy car
@@ -41,6 +46,7 @@ During the meeting, grab a picture or ask for the graphics so we can analyze the
         category: "Events"
       },
       {
+        id: 3,
         title: `Upgrading setup`,
         body: `Contact Dan about his ideas for a camera system.
 Talk to Kevin before going through with the microphone changes`,
@@ -48,18 +54,21 @@ Talk to Kevin before going through with the microphone changes`,
         category: "Projects"
       },
       {
+        id: 4,
         title: `Morning Reflections`,
         body: `The sunrise today was breathtaking, filling the sky with shades of orange and pink. I felt a deep sense of gratitude for the beauty of nature.`,
         date: Date.now(),
         category: "General"
       },
       {
+        id: 5,
         title: `Project Update`,
         body: `The new feature has been successfully integrated into the app and tested. Next steps include finalizing the user interface and preparing for launch.`,
         date: Date.now(),
         category: "Projects"
       },
       {
+        id: 6,
         title: `Grocery List Reminder`,
         body: `Remember to pick up fresh vegetables, eggs, and milk from the store. Also, don't forget to grab some coffee and cereal for breakfast.`,
         date: Date.now(),
@@ -68,42 +77,49 @@ Talk to Kevin before going through with the microphone changes`,
     ],
     regularNotes: [
       {
+        id: 7,
         title: "Weekend Plans",
         body: "Planning to visit the local museum this Saturday to see the new art exhibit. Afterwards, I'm meeting friends for a late lunch at our favorite café.",
         date: Date.now(),
         category: "Fun"
       },
       {
+        id: 8,
         title: "Book Recommendation",
         body: "Just finished reading 'The Midnight Library' by Matt Haig, a thought-provoking exploration of life's choices. Highly recommend it to anyone looking for an engaging read.",
         date: Date.now(),
         category: "Education"
       },
       {
+        id: 9,
         title: "Fitness Goals",
         body: "Started a new workout routine focusing on strength training and cardio. Feeling more energized and motivated to maintain a healthier lifestyle.",
         date: Date.now(),
         category: "Fitness"
       },
       {
+        id: 10,
         title: "Recipe Idea",
         body: "Thinking of making a homemade lasagna for dinner tonight, packed with layers of cheese, sauce, and fresh herbs. It's always a family favorite and perfect for leftovers.",
         date: Date.now(),
         category: "Fitness"
       },
       {
+        id: 11,
         title: "Travel Inspiration",
         body: "Dreaming of visiting Kyoto in the spring to see the cherry blossoms in full bloom. The city's rich history and beautiful gardens are calling my name.",
         date: Date.now(),
         category: "Projects"
       },
       {
+        id: 12,
         title: "Tech Conference Highlights",
         body: "Attended a virtual tech conference today, learned about the latest trends in AI and machine learning. Excited to apply some of these insights to our upcoming projects.",
         date: Date.now(),
         category: "Fun"
       },
       {
+        id: 13,
         title: "Meditation Practice",
         body: "Started incorporating meditation into my daily routine to help manage stress. Even a few minutes of deep breathing and mindfulness makes a big difference.",
         date: Date.now(),
@@ -241,6 +257,43 @@ Talk to Kevin before going through with the microphone changes`,
 
   function handleArrays(array: Array<note>, bool: boolean, arrayNum: number) {
 
+    function bookmarkOrReg() {
+      if (arrayNum === 1 || arrayNum === 2) {
+        console.log(arrayNum)
+        return (
+          <IonItem
+            button={true}
+            detail={false}
+            className='note-option-list-item'>
+            <IonCol size='2'>
+              <BookmarksOutline />
+            </IonCol>
+            <IonCol size='10'>
+              <div className='note-option-list-item-text'>
+                Remove Bookmark
+              </div>
+            </IonCol>
+          </IonItem>
+        )
+      } else {
+        return (
+          <IonItem
+            button={true}
+            detail={false}
+            className='note-option-list-item'>
+            <IonCol size='2'>
+              <BookmarkOutline />
+            </IonCol>
+            <IonCol size='10'>
+              <div className='note-option-list-item-text'>
+                Add Bookmark
+              </div>
+            </IonCol>
+          </IonItem>
+        )
+      }
+    }
+
     return array.map((note, index) => (
       <div
         key={`reg-note-${index}`}
@@ -272,17 +325,17 @@ Talk to Kevin before going through with the microphone changes`,
               >
                 <IonContent>
                   <IonList class='note-option-list'>
+                    {bookmarkOrReg()}
                     <IonItem
                       button={true}
                       detail={false}
-                      className='note-option-list-item'
-                    >
+                      className='note-option-list-item'>
                       <IonCol size='2'>
-                        <TrashOutline />
+                        <HeartOutline />
                       </IonCol>
                       <IonCol size='10'>
                         <div className='note-option-list-item-text'>
-                          Delete
+                          Add Priority
                         </div>
                       </IonCol>
                     </IonItem>
@@ -302,13 +355,14 @@ Talk to Kevin before going through with the microphone changes`,
                     <IonItem
                       button={true}
                       detail={false}
-                      className='note-option-list-item'>
+                      className='note-option-list-item'
+                    >
                       <IonCol size='2'>
-                        <BookmarksOutline />
+                        <TrashOutline />
                       </IonCol>
                       <IonCol size='10'>
                         <div className='note-option-list-item-text'>
-                          Remove Bookmark
+                          Delete
                         </div>
                       </IonCol>
                     </IonItem>
@@ -330,7 +384,9 @@ Talk to Kevin before going through with the microphone changes`,
         <IonModal isOpen={categoryModal}>
           <IonHeader>
             <IonToolbar>
-              <IonTitle>Categories</IonTitle>
+              <h1>
+                Categories
+              </h1>
               <IonButtons slot="end">
                 <IonButton onClick={() => setCategoryModal(false)}>Close</IonButton>
               </IonButtons>
@@ -339,7 +395,9 @@ Talk to Kevin before going through with the microphone changes`,
           <IonContent className="ion-padding">
             {categories.map((category, index) => {
               return (
-                <IonItemSliding key={index}>
+                <IonItemSliding
+                  className='category-item'
+                  key={index}>
                   <IonItemOptions side="start">
                     {category === 'All Notes' ? null : (
                       <IonItemOption color="danger" onClick={() => handleDeleteCategory(index)}>
@@ -360,7 +418,8 @@ Talk to Kevin before going through with the microphone changes`,
             <br />
             <IonRow>
               <IonCol size='12'>
-                <IonItem>
+                <IonItem
+                  className='new-category-input'>
                   <IonInput
                     label="New Category"
                     placeholder="Enter category"
@@ -371,7 +430,8 @@ Talk to Kevin before going through with the microphone changes`,
               </IonCol>
               <IonCol size='12'>
                 <IonButton
-                expand='block'
+                  className='add-category-button'
+                  expand='block'
                   onClick={() => {
                     handleAddCategory()
                   }}>
@@ -438,8 +498,11 @@ Talk to Kevin before going through with the microphone changes`,
               </IonCol>
             </IonRow>
             <IonRow>
-              {priorityNotes.map((note, index) => (
+              {priorityNotes.map((note: any, index) => (
                 <div
+                  onClick={() => {
+                    history.push(`/note/${note.id}`)
+                  }}
                   key={`priority-note-${index}`}
                   className='note priority-note '>
                   <div className='note-title'>

@@ -5,6 +5,8 @@
 
     /* prefrence-colors */
     --prefrence-color: #00bf63;
+
+    --ion-toolbar-background: var(--background-color)!important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -14,9 +16,5 @@
         --note-background-color: rgb(23, 23, 23);
 
         --prefrence-color: #00bf63;
-
     }
-}
-ion-content {
-    --ion-background-color: var(--background-color);
 }

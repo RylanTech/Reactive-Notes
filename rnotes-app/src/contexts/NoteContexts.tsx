@@ -1,6 +1,7 @@
 import React, { ReactNode, createContext } from "react";
 
 export interface note {
+    id: number;
     title: string;
     body: string;
     date: date; 

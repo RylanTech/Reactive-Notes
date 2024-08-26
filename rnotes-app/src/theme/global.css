@@ -7,12 +7,15 @@ h1 {
     font-size: 38px !important;
 }
 
-p, ion-title, ion-input {
+p, ion-title, ion-input, ion-item {
     font-family: "Montserrat", sans-serif;
 }
 
-/* 
-ion-popover::part(backdrop) {
-    background-color: rgba(0, 0, 0, 0);
-    Fully transparent backdrop
-} */
+ion-content {
+    --ion-background-color: var(--background-color)!important;
+}
+.toolbar-container, toolbar-container {
+    background: var(--background-color)!important;
+    --ion-toolbar-background: var(--background-color)!important;
+    --ion-background-color: var(--background-color)!important;
+}

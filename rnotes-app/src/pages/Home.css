@@ -122,3 +122,24 @@ body.popover-open {
 .note-options-button span svg {
     color: var(--text-color);
 }
+
+/* Categories modal */
+.category-item ion-item {
+    --background: rgb(23, 23, 23);
+    margin-top: 15px;
+    border-radius: 22px;
+} 
+ion-item-options .ion-activatable {
+    margin-top: 15px!important;
+    border-radius: 22px;
+    margin: 0px 2px;
+    --background: var(--prefrence-color);
+}
+.new-category-input {
+    --background: rgb(23, 23, 23);
+    border-radius: 22px;
+    margin-top: 15px;
+}
+.add-category-button {
+    --background: var(--prefrence-color);
+}
