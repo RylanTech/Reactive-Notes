@@ -11,7 +11,7 @@ const Home: React.FC = () => {
   const history = useHistory()
 
   const [categoryModal, setCategoryModal] = useState(false);
-  const [newCategory, setNewCategory] = useState<String | undefined | null>('');
+  const [newCategory, setNewCategory] = useState<string | undefined | number | null>('');
   const [categories, setCategories] = useState<Array<String | null>>([])
   const [selectedCategory, setSelectedCategory] = useState(0);
 
@@ -20,9 +20,7 @@ const Home: React.FC = () => {
   const [regularArrayOne, setRegularArrayOne] = useState<Array<note>>([]);
   const [regularArrayTwo, setRegularArrayTwo] = useState<Array<note>>([]);
 
-  // const [notes, setNotes] = useState<noteBigObject>(defaultNoteBigObject)
-
-  const notes: noteBigObject = {
+  let noteObject: noteBigObject = {
     priorityNotes: [
       {
         id: 1,
@@ -128,6 +126,8 @@ Talk to Kevin before going through with the microphone changes`,
     ]
   }
 
+  const [notes, setNotes] = useState<noteBigObject>(noteObject)
+
   const { getAllNotes, getCategories, saveCategories } = useContext(NoteContext)
 
   const { priorityNotes, bookmarkedNotes, regularNotes } = notes
@@ -140,8 +140,8 @@ Talk to Kevin before going through with the microphone changes`,
       let bookmarkedArrayOne: Array<note> = [];
       let bookmarkedArrayTwo: Array<note> = [];
       if (bookmarkedNotes) {
-        bookmarkedNotes.map((item: note | null, index: number) => {
-          if (item !== null) { // Check to ensure item is not null
+        bookmarkedNotes.map((item: note | undefined, index: number) => {
+          if (item !== undefined) {
             if (index % 2 === 0) {
               bookmarkedArrayOne.push(item);
             } else {
@@ -156,8 +156,8 @@ Talk to Kevin before going through with the microphone changes`,
       let regularArrayOne: Array<note> = [];
       let regularArrayTwo: Array<note> = [];
       if (regularNotes) {
-        regularNotes.map((item: note | null, index: number) => {
-          if (item !== null) { // Check to ensure item is not null
+        regularNotes.map((item: note | undefined, index: number) => {
+          if (item !== undefined) {
             if (index % 2 === 0) {
               regularArrayOne.push(item);
             } else {
@@ -170,7 +170,26 @@ Talk to Kevin before going through with the microphone changes`,
       }
     }
     settingUp();
-  }, []);
+  }, [notes]);
+
+  function selectCategory(categoryName: String) {
+    if (categoryName !== "All Notes") {
+      let indexingNotes = noteObject
+      let regularNotes = indexingNotes.regularNotes?.filter(note => note?.category === categoryName)
+      let priorityNotes = indexingNotes.priorityNotes?.filter(note => note?.category === categoryName)
+      let bookmarkedNotes = indexingNotes.bookmarkedNotes?.filter(note => note?.category === categoryName)
+
+      let newNoteObject: noteBigObject = {
+        regularNotes,
+        priorityNotes,
+        bookmarkedNotes
+      }
+      setNotes(newNoteObject)
+    } else {
+      console.log(noteObject)
+      setNotes(noteObject)
+    }
+  }
 
 
 
@@ -204,11 +223,15 @@ Talk to Kevin before going through with the microphone changes`,
     return truncatedText;
   }
 
-  function handleSetSelectedCategory(index: number) {
+  function handleSetSelectedCategory(index: number, category: String | null) {
+    if (!category) {
+      return
+    }
     let oldHighlightedSelector = document.getElementById(`selector-item-${selectedCategory}`)
     oldHighlightedSelector?.classList.remove("selected-item")
 
     setSelectedCategory(index)
+    selectCategory(category)
     let highlightedSelector = document.getElementById(`selector-item-${index}`)
     highlightedSelector?.classList.add("selected-item")
   }
@@ -245,64 +268,67 @@ Talk to Kevin before going through with the microphone changes`,
     } else if (newCategory === null) {
       return
     }
-    if (newCategory.trim() !== '') {
-      let newCategories = [...categories, newCategory.trim()]
+    let ncat
+    if (typeof newCategory === "number") {
+      ncat = newCategory.toString()
+    } else {
+      ncat = newCategory
+    }
+    if (ncat.trim() !== '') {
+      let newCategories = [...categories, ncat.trim()]
       console.log(newCategories)
       setCategories(newCategories);
       saveCategories(newCategories);
-      setNewCategory(null)
+      setNewCategory(undefined)
     }
+    setNewCategory(undefined)
+
   };
 
 
   function handleArrays(array: Array<note>, bool: boolean, arrayNum: number) {
 
-    function bookmarkOrReg() {
+    const BookmarkOrReg = ({ arrayNum }: any) => {
       if (arrayNum === 1 || arrayNum === 2) {
-        console.log(arrayNum)
         return (
-          <IonItem
-            button={true}
-            detail={false}
-            className='note-option-list-item'>
-            <IonCol size='2'>
+          <IonItem button={true} detail={false} className="note-option-list-item">
+            <IonCol size="2">
               <BookmarksOutline />
             </IonCol>
-            <IonCol size='10'>
-              <div className='note-option-list-item-text'>
-                Remove Bookmark
-              </div>
+            <IonCol size="10">
+              <div className="note-option-list-item-text">Remove Bookmark</div>
             </IonCol>
           </IonItem>
-        )
+        );
       } else {
         return (
-          <IonItem
-            button={true}
-            detail={false}
-            className='note-option-list-item'>
-            <IonCol size='2'>
+          <IonItem button={true} detail={false} className="note-option-list-item">
+            <IonCol size="2">
               <BookmarkOutline />
             </IonCol>
-            <IonCol size='10'>
-              <div className='note-option-list-item-text'>
-                Add Bookmark
-              </div>
+            <IonCol size="10">
+              <div className="note-option-list-item-text">Add Bookmark</div>
             </IonCol>
           </IonItem>
-        )
+        );
       }
-    }
+    };
 
     return array.map((note, index) => (
       <div
         key={`reg-note-${index}`}
         className={`note ${bool ? 'note-array-one' : 'note-array-two'}`}>
-        <div className='note-title'>
+        <div className='note-title'
+          onClick={() => {
+            history.push(`/note/${note.id}`)
+          }}>
           {note.title}
         </div>
-        <div className='note-body'>
-          {notePreviewLimit(note.body, 15)}
+        <div className='note-body'
+          onClick={() => {
+            history.push(`/note/${note.id}`)
+          }}>
+          {note.body ? (notePreviewLimit(note.body, 15)) : (<></>)}
         </div>
         <div className='note-footer'>
           <IonRow>
@@ -325,7 +351,7 @@ Talk to Kevin before going through with the microphone changes`,
               >
                 <IonContent>
                   <IonList class='note-option-list'>
-                    {bookmarkOrReg()}
+                    <BookmarkOrReg arrayNum={arrayNum} />
                     <IonItem
                       button={true}
                       detail={false}
@@ -423,6 +449,7 @@ Talk to Kevin before going through with the microphone changes`,
                   <IonInput
                     label="New Category"
                     placeholder="Enter category"
+                    value={newCategory}
                     onIonInput={(e) => {
                       setNewCategory(e.detail.value)
                     }} />
@@ -474,8 +501,10 @@ Talk to Kevin before going through with the microphone changes`,
                 key={index}
                 className={`selector-item ` + `${index ? `` : `selected-item`}`}
                 id={`selector-item-${index}`}
-                onClick={() => {
-                  handleSetSelectedCategory(index)
+                onClick={(e) => {
+
+                  handleSetSelectedCategory(index, item)
+
                 }}>
                 #{item}
               </div>
@@ -484,31 +513,38 @@ Talk to Kevin before going through with the microphone changes`,
         </IonRow>
         {priorityNotes ? (
           <>
-            <IonRow>
-              <IonCol size='2'>
-                <div className='bookmark-icon'>
-                  <BookmarkOutline
-                    width="45px"
-                    height="45px"
-                  />
-                </div>
-              </IonCol>
-              <IonCol size='10'>
-                <div className='line' />
-              </IonCol>
-            </IonRow>
+            {priorityNotes[0]?.date ? (
+              <IonRow>
+                <IonCol size='2'>
+                  <div className='bookmark-icon'>
+                    <BookmarkOutline
+                      width="45px"
+                      height="45px"
+                    />
+                  </div>
+                </IonCol>
+                <IonCol size='10'>
+                  <div className='line' />
+                </IonCol>
+              </IonRow>
+            ) : (
+              <></>
+            )}
             <IonRow>
               {priorityNotes.map((note: any, index) => (
                 <div
-                  onClick={() => {
-                    history.push(`/note/${note.id}`)
-                  }}
                   key={`priority-note-${index}`}
                   className='note priority-note '>
-                  <div className='note-title'>
+                  <div className='note-title'
+                    onClick={() => {
+                      history.push(`/note/${note.id}`)
+                    }}>
                     {note ? (note.title) : ('')}
                   </div>
-                  <div className='note-body'>
+                  <div className='note-body'
+                    onClick={() => {
+                      history.push(`/note/${note.id}`)
+                    }}>
                     {note ? (notePreviewLimit(note.body, 25)) : ''}
                   </div>
                   <div className='note-footer'>
@@ -592,7 +628,26 @@ Talk to Kevin before going through with the microphone changes`,
           </IonCol>
         </IonRow>
         <IonRow>
-          <div className='second-line' />
+          {bookmarkedNotes ? (
+            <>
+              {regularNotes ? (
+                <>
+                  {regularNotes[0]?.title ? (
+                    <>
+                      {bookmarkedNotes[0]?.title ? (<div className='second-line' />) : (<></>)}
+                      <br /><br />
+                    </>
+                  ) : (<>
+                  </>)}
+                </>
+              ) : (
+                <></>
+              )}
+            </>
+          ) : (
+            <>
+            </>
+          )}
         </IonRow>
         <IonRow>
           <IonCol size='6'>

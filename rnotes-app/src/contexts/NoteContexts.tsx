@@ -1,20 +1,30 @@
-import React, { ReactNode, createContext } from "react";
+import React, { ReactNode, createContext, useEffect, useState } from "react";
+import { Storage } from '@ionic/storage';
 
 export interface note {
     id: number;
-    title: string;
-    body: string;
-    date: date; 
-    category: string;
+    title: string | undefined;
+    body: string | undefined;
+    date: date | undefined; 
+    category: string | undefined;
 }
 
+export interface newNote {
+    title: string | undefined;
+    body: string | undefined;
+    date: date | undefined; 
+    category: string | undefined;
+}
+
+
 export interface noteBigObject {
-    priorityNotes: Array<note | null> | null;
-    bookmarkedNotes: Array<note | null> | null;
-    regularNotes: Array<note | null> | null;
+    priorityNotes: Array<note | undefined> | undefined;
+    bookmarkedNotes: Array<note | undefined> | undefined;
+    regularNotes: Array<note | undefined> | undefined;
 }
 
 interface NoteContextProps {
+    notes: Array<note>[] | undefined;
     getAllNotes: () => Promise<noteBigObject>;
     getCategories: () => Promise<Array<String | null>>;
     saveCategories: (categories: Array<String | null>) => Promise<void>;
@@ -32,12 +42,53 @@ export const defaultNoteBigObject: noteBigObject = {
 
 // Updated createContext with a proper default value for getAllNotes
 export const NoteContext = createContext<NoteContextProps>({
+    notes: [],
     getAllNotes: () => Promise.resolve(defaultNoteBigObject),
     getCategories: () => Promise.resolve([""]),
     saveCategories: (categories: Array<String | null>) => Promise.resolve()
 });
 
 export const NoteProvider = ({ children }: NoteContextProviderProps) => {
+    const [store, setStorage] = useState<Storage>()
+    const [notes, setNotes] = useState<Array<note>[] | undefined>()
+    const [latestNoteId, setLatestNoteId] = useState<number>(0)
+
+    const myNotes = 'myNotes'
+
+    useEffect(() => {
+        const initStorage = async () => {
+            const newStore = new Storage({
+                name: 'rnotesdb'
+            })
+            const store = await newStore.create()
+            setStorage(store)
+
+            const storedNotes = await store.get(myNotes) || []
+            setNotes(storedNotes)
+
+            let noteId = await localStorage.getItem("latestNoteId")
+            if (noteId) {
+                setLatestNoteId(JSON.parse(noteId))
+            }
+        }
+        initStorage()
+    })
+
+    const saveNewNote = async (note: newNote): Promise<void> => {
+        try {
+            const newNote: note = {
+                title: note.title,
+                body: note.body,
+                date: note.date,
+                id: latestNoteId + 1,
+                category: note.category
+            }
+        } catch {
+            return
+        }
+    }
+
+
 
     const getAllNotes = async (): Promise<noteBigObject> => {
         try {
@@ -88,6 +139,7 @@ export const NoteProvider = ({ children }: NoteContextProviderProps) => {
     return (
         <NoteContext.Provider
             value={{
+                notes,
                 getAllNotes,
                 getCategories,
                 saveCategories
